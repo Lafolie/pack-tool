@@ -5,6 +5,7 @@ return function(mainChannel, packsDir)
 	mainChannel:push {cmd = "numPackItems", data = #items}
 
 	for _, name in ipairs(items) do
+		timer.sleep(0.5)
 		local path = packsDir .. name
 		local info = love.filesystem.getInfo(path)
 		local type_ = info.type == "file" and "archive" or "dir"

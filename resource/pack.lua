@@ -1,6 +1,7 @@
 local image = require "love.image"
 local Tex = require "resource.texSet"
 local colors = require "etc.colors"
+local shadowedText = require "etc.shadowedText"
 
 local Pack = {}
 
@@ -21,9 +22,9 @@ end
 
 function Pack:initMain(defaultIcon)
 	local font = love.graphics.getFont()
-	local color = type_ == "dir" and colors.blue or colors.green
-	self.nameText = love.graphics.newText(font, {color, self.name})
-	self.metaText = love.graphics.newText(font, 
+
+	self.nameText = shadowedText(font, {self:getTypeColor(), self.name})
+	self.metaText = shadowedText(font,
 	{
 		colors.grey,  string.format("(%s)", self.meta.pack_format),
 		colors.white, self.meta.description
@@ -33,11 +34,16 @@ function Pack:initMain(defaultIcon)
 end
 
 function Pack:draw(x, y)
+	love.graphics.setColor(colors.white)
 	if self.meta.icon then
 		love.graphics.draw(self.icon, x, y, 0, 2, 2)
 	end
 	love.graphics.draw(self.nameText, x + 34, y - 1)
 	love.graphics.draw(self.metaText, x + 34, y + 16)
+end
+
+function Pack:getTypeColor()
+	return self.type == "dir" and colors.blue or colors.green
 end
 
 function Pack:isMounted()
