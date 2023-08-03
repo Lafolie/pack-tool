@@ -14,8 +14,16 @@ function packList.add(pack)
 	return pack
 end
 
-function packList.getProgress()
-	return expected >= 0 and received / expected or 0
+function packList.getLoadProgress()
+	if expected == 0 then
+		return 1
+	end
+
+	if expected > 0 then
+		return received / expected
+	end
+	
+	return 0
 end
 
 return packList

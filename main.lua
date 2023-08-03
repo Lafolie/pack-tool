@@ -1,4 +1,3 @@
-local util = require "etc.util"
 local packList = require "etc.packList"
 local Pack = require "resource.pack"
 
@@ -34,11 +33,11 @@ function love.update()
 end
 
 function love.draw()
-	local loaded = packList.getProgress()
+	local loaded = packList.getLoadProgress()
 
 	if loaded < 1 then
 		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth() * loaded, 64)
-		-- return
+		return
 	end
 
 	love.graphics.print(loaded, 1, 1)
@@ -58,6 +57,6 @@ function love.keypressed(key)
 end
 
 function love.quit()
-	-- ioChannel:supply {cmd = "shutdown"}
+	ioChannel:supply {cmd = "shutdown"}
 	-- ioThread:wait()
 end
