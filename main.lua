@@ -15,6 +15,8 @@ local mainChannel = love.thread.getChannel "main"
 
 local handlers = require "etc.loadHandlers" "mainThread/handlers"
 
+local background = love.graphics.newImage "assets/bg.png"
+background:setFilter("linear", "linear", 0)
 
 function love.load()
 	ioThread:start()
@@ -36,6 +38,8 @@ end
 function love.draw()
 	local loaded = packList.getLoadProgress()
 	local w, h = love.graphics.getDimensions()
+
+	love.graphics.draw(background, 0, 0, 0, w * 0.5, h * 0.5 )
 	if loaded < 1 then
 		love.graphics.setColor(0.05, 0.35, 0.3, 1)
 		love.graphics.rectangle("fill", 0, h - 24, love.graphics.getWidth() * loaded, 32)
