@@ -35,11 +35,13 @@ end
 
 function TexSet:split()
 
+end
+
 function TexSet:draw(x, y)
 	love.graphics.draw(self.canvas(), x, y)
 end
 
-return setmetatable(TexSet, {__call = function(...)
+return setmetatable(TexSet, {__call = function(_, ...)
 	local t = setmetatable({}, {__index = TexSet})
 	t:init(...)
 	return t

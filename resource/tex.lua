@@ -12,7 +12,7 @@ function Tex:draw()
 	love.graphics.draw(self.img, self.x, self.y)
 end
 
-return setmetatable(Tex, {__call = function(...)
+return setmetatable(Tex, {__call = function(_, ...)
 	local t = setmetatable({}, {__index = Tex})
 	t:init(...)
 	return t

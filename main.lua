@@ -1,29 +1,53 @@
 local util = require "etc.util"
+local packList = require "etc.packList"
 local Pack = require "resource.pack"
 
 local insert = table.insert
 local format, match = string.format, string.match
 
-local packs = {}
+love.graphics.setDefaultFilter("nearest", "nearest")
 
-local MOUNT_PATH = "zip/"
+local packsDir = "packs/"
+
+local ioThread = love.thread.newThread "ioThread/main.lua"
+local ioChannel = love.thread.getChannel "io"
+local mainChannel = love.thread.getChannel "main"
+
+local handlers = require "etc.loadHandlers" "mainThread/handlers"
+
+
 function love.load()
-	local discovered = util.discoverPacks "packs/"
-	print(format("Discovered %s potential packs:", #packs))
-	for k, pack in ipairs(discovered) do
-		local metaPath = pack.name
-		if pack.isArchive then
-			metaPath = MOUNT_PATH .. metaPath
-			love.filesystem.mount(pack.path, metaPath)
-		end
+	ioThread:start()
+	ioChannel:push {cmd = "discoverPacks", data = packsDir}
+end
 
-		local meta = util.readMeta(metaPath)
-		print(format("\t%s\n\t\tType: %s\n\t\tDesc: %s\n\t\tFormat: %s", pack.name, (pack.isArchive and "archive" or "dir"), meta.description, meta.format))
+function love.update()
+	while mainChannel:getCount() > 0 do
+		local msg = mainChannel:pop()
+		local handler = handlers[msg.cmd]
+		if handler then
+			handler(mainChannel, msg.data)
+		else
+			print("ERROR: No handler for mainThread: " .. msg.cmd)
+		end
 	end
 end
 
 function love.draw()
+	local loaded = packList.getProgress()
 
+	if loaded < 1 then
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth() * loaded, 64)
+		-- return
+	end
+
+	love.graphics.print(loaded, 1, 1)
+	love.graphics.setColor(1, 1, 1, 1)
+	for k, pack in ipairs(packList) do
+		local y = 4 + (k - 1) * 42
+		local x = 4
+		pack:draw(x, y)
+	end
 end
 
 function love.keypressed(key)
@@ -31,4 +55,9 @@ function love.keypressed(key)
 	if key == "q" and ctrl then
 		return love.event.push "quit"
 	end
+end
+
+function love.quit()
+	-- ioChannel:supply {cmd = "shutdown"}
+	-- ioThread:wait()
 end
