@@ -26,6 +26,17 @@ Pack Tool is a [LÖVE](https://love2d.org) application. It requires LÖVE versio
 2. Clone the repo
 3. In the root dir, run `love .` (assuming `love` is on your PATH)
 
+# Shared Modules
+
+Pack Tool is multi-threaded program. [LÖVE threads](love2d.org/wiki/love.thread) use channels with distinct Lua environments; non-userdata values can not be shared between threads, and must be passed via [channels](love2d.org/wiki/Channel). Modules must be require'd in each thread, and several LÖVE modules are only available in the main thread.
+
+Code duplication is avoided via the `share/` dir. These modules are used by both threads. 
+
+For clarity and simplicity, resource modules are split into two parts. An example of this is the `Pack` module. `Pack` is a "class" that contains meta information for packs, such as their type, paths, and `.mcmeta` info:
+
+* `share/resource/pack/pack.lua` contains `Pack` is usable by **both threads**
+* `mainThread/resource/packMain.lua` is a subclass of `Pack`, and is usable only by the **main thread**
+
 # Usage Instructions
 
 TODO

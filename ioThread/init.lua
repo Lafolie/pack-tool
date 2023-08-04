@@ -1,6 +1,7 @@
+class = require "share.class"
 local ioChannel = love.thread.getChannel "io"
 local mainChannel = love.thread.getChannel "main"
-local handlers = require "etc.loadHandlers" "ioThread/handlers"
+local handlers = require "share.loadHandlers" "ioThread/handlers"
 
 --TODO: remove this
 timer = require "love.timer"

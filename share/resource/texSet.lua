@@ -1,4 +1,4 @@
-local Tex = require "resource.tex"
+local Tex = require "share.resource.tex"
 local TexSet = {}
 
 local padding = 32

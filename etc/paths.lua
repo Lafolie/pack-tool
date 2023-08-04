@@ -2,5 +2,6 @@ return
 {
 	packs = "packs/",
 	sheets = "sheets/",
-	exports = "exported/"
+	exports = "exported/",
+	mount = "mount/"
 }

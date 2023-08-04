@@ -1,9 +1,6 @@
 local image = require "love.image"
-local Tex = require "resource.texSet"
-local colors = require "etc.colors"
-local shadowedText = require "etc.shadowedText"
 
-local Pack = {}
+local Pack = class {}
 
 local MOUNT_PATH = "mount/"
 
@@ -18,34 +15,6 @@ function Pack:init(name, path, type_)
 		pack_format = "??",
 		icon = false
 	}
-end
-
-function Pack:initMain(defaultIcon, typeIcons)
-	local font = love.graphics.getFont()
-
-	self.typeIcon = typeIcons[self.type]
-	self.nameText = shadowedText(font, {self:getTypeColor().light, self.name})
-	self.metaText = shadowedText(font,
-	{
-		colors.grey,  string.format("(%s)", self.meta.pack_format),
-		colors.white, self.meta.description
-	})
-
-	self.icon = self.meta.icon and love.graphics.newImage(self.meta.icon) or defaultIcon
-end
-
-function Pack:draw(x, y)
-	love.graphics.setColor(colors.white)
-	if self.meta.icon then
-		love.graphics.draw(self.icon, x, y, 0, 2, 2)
-	end
-	love.graphics.draw(self.typeIcon, x + 35, y - 1)
-	love.graphics.draw(self.nameText, x + 53, y)
-	love.graphics.draw(self.metaText, x + 34, y + 16)
-end
-
-function Pack:getTypeColor()
-	return self.type == "dir" and colors.blue or colors.green
 end
 
 function Pack:isMounted()
@@ -107,12 +76,4 @@ function Pack:readMeta()
 	end
 end
 
-return setmetatable(Pack, {__call = function(_, a, ...)
-	if type(a) == "table" then
-		return setmetatable(a, {__index = Pack})
-	else
-		local t = setmetatable({}, {__index = Pack})
-		t:init(a, ...)
-		return t
-	end
-end})
+return Pack

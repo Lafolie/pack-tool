@@ -1,36 +1,37 @@
+local State = require "etc.state"
 local packList = require "etc.packList"
 local paths = require "etc.paths"
 local colors = require "etc.colors"
 
-local startup = {}
+local Startup = class (State) {}
 
-function startup.enter(ioChannel)
+function Startup:enter(ioChannel)
 	ioChannel:push {cmd = "discoverPacks", data = paths.packs}
 end
 
-function startup.leave()
+function Startup:leave()
 
 end
 
-function startup.update(ioChannel)
+function Startup:update(ioChannel)
 	if packList.getLoadProgress() == 1 then
 		return "selectPack"
 	end
 end
 
-function startup.keyPressed(key, shift)
+function Startup:keyPressed(key, ctrl)
 
 end
 
-function startup.mouseMoved(x, y)
+function Startup:mouseMoved(x, y)
 
 end
 
-function startup.mousePressed(btn, x, y)
+function Startup:mousePressed(btn, x, y)
 
 end
 
-function startup.draw(x, y, w, h)
+function Startup:draw(x, y, w, h)
 	local loaded = packList.getLoadProgress()
 	if loaded < 1 then
 		for x = 0, 3 do
@@ -41,12 +42,12 @@ function startup.draw(x, y, w, h)
 	end
 end
 
-function startup.getStatusText()
+function Startup:getStatusString()
 	return "Discovering resourcepacks..."
 end
 
-function startup.getHelpText()
+function Startup:getHelpString()
 	return string.format("%d%%", packList.getLoadProgress() * 100)
 end
 
-return startup
+return Startup
