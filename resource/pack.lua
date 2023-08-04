@@ -20,10 +20,11 @@ function Pack:init(name, path, type_)
 	}
 end
 
-function Pack:initMain(defaultIcon)
+function Pack:initMain(defaultIcon, typeIcons)
 	local font = love.graphics.getFont()
 
-	self.nameText = shadowedText(font, {self:getTypeColor(), self.name})
+	self.typeIcon = typeIcons[self.type]
+	self.nameText = shadowedText(font, {self:getTypeColor().light, self.name})
 	self.metaText = shadowedText(font,
 	{
 		colors.grey,  string.format("(%s)", self.meta.pack_format),
@@ -38,7 +39,8 @@ function Pack:draw(x, y)
 	if self.meta.icon then
 		love.graphics.draw(self.icon, x, y, 0, 2, 2)
 	end
-	love.graphics.draw(self.nameText, x + 34, y - 1)
+	love.graphics.draw(self.typeIcon, x + 35, y - 1)
+	love.graphics.draw(self.nameText, x + 53, y)
 	love.graphics.draw(self.metaText, x + 34, y + 16)
 end
 
